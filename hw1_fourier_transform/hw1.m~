@@ -13,10 +13,8 @@ k=(2*pi/(2*L))*[0:(n/2-1) -n/2:-1]; ks=fftshift(k);
 % plot the noisy data of measurement 1
 figure(1)
 Un1(:,:,:)=reshape(Undata(1,:),n,n,n);
-isosurface(X,Y,Z,abs(Un1),0.8)
+isosurface(X,Y,Z,abs(Un),0.8)
 axis([-L L -L L -L L]), grid on, drawnow
-xlabel('x'); ylabel('y');zlabel('z');
-pause(1)
 
 %% do fourier transformation on data and average the spectrum
 Untave = 0;
@@ -42,19 +40,17 @@ specmax = max(spec1d);
 specUntave = specUntave/specmax;
 
 % plot the isosurface in frequency domain
-figure(2)
+figure(1)
 
 subplot(1,2,1)
 isosurface(Kx,Ky,Kz,fftshift(specUnt1),0.6)
 axis([-2*pi 2*pi -2*pi 2*pi -2*pi 2*pi]), grid on, drawnow
 xlabel('kx'); ylabel('ky');zlabel('kz');
-pause(1)
 
 subplot(1,2,2)
 isosurface(Kx,Ky,Kz,fftshift(specUntave),0.6)
 axis([-2*pi 2*pi -2*pi 2*pi -2*pi 2*pi]), grid on, drawnow
 xlabel('kx'); ylabel('ky');zlabel('kz');
-pause(1)
 
 % search the central frequency (with the biggest signal intensity)
 for m = 1:n
@@ -74,9 +70,8 @@ filter = exp(-1.0*(fftshift(Kx)-k(cent_freq(2))).^2) .* ...
 
 position = zeros(20, 3);
 
-figure(3) % for plotting the isosurface in spatial domain
+figure(2) % for plotting the isosurface in spatial domain
 
-subplot(1,2,1)
 for j = 1:20
     % apply filter on each spectrum and ifft back
     Un(:,:,:)=reshape(Undata(j,:),n,n,n); 
@@ -106,7 +101,7 @@ for j = 1:20
 end
 
 % plot the trajectory
-subplot(1,2,2)
+figure(3)
 plot3(position(:,1), position(:,2), position(:,3), 'bo-', 'Linewidth', 2)
 axis([-L L -L L -L L]), grid on, drawnow
 xlabel('x'); ylabel('y');zlabel('z');
