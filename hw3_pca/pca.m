@@ -31,6 +31,6 @@ M = repmat(mean(X,2),1,nY);
 X = X - M;
 
 % SVD
-[u,s,v] = svd(X/sqrt(nY-1));
+[u,s,v] = svd(X');
 end
 
