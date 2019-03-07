@@ -68,10 +68,21 @@ figure(3)
 % plot the composition of the top 12 components
 for j = 1:12
     subplot(3,4,j)
-    comsposition = v(j,:);
+    comsposition = v(:,j);
     plot(comsposition)
 end
 
+%% Reconstruct image
+
+np = 240;
+
+ims_recon = u(:,1:np) * s(1:np,1:np) * v(:,1:np)';
+
+for j =1:8
+    subplot(2,4,j)
+    face_recon = reshape(ims_recon(:,j),[192,168]);
+    pcolor(face_recon); shading flat; colormap gray; axis ij;
+end
 %% Load uncropped images
 
 ims_uncrop = [];
@@ -158,3 +169,15 @@ plot(log(energies2), 'bo--')
 xlabel('PC')
 ylabel('log(energy)')
 title('Uncropped')
+
+%% Reconstruct image
+
+np = 16;
+
+ims_recon2 = u2(:,1:np) * s2(1:np,1:np) * v2(:,1:np)';
+
+for j =1:8
+    subplot(2,4,j)
+    face_recon2 = reshape(ims_recon2(:,j),[243,320]);
+    pcolor(face_recon2); shading flat; colormap gray; axis ij;
+end
