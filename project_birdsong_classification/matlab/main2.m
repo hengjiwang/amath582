@@ -29,7 +29,7 @@ cnames_train = [];
 cnames_test = [];
 
 h=waitbar(0,'please wait');
-for k = 3:nfile
+for k = 3:(nfile+2)
     name = list(k).name;
     song = audioread(strcat(path,name));
     info = audioinfo(strcat(path,name));
@@ -59,35 +59,55 @@ delete(h)
 
 %% 
 
+L = (length(genuses'));
+
+inds = randperm(L);
+
+data_set = data_set(:,inds);
+genuses = genuses(:,inds);
+cnames = cnames(:,inds);
+
+%% 
+
+train_set = data_set(:, 1:floor(0.8*L));
+test_set = data_set(:, ceil(0.8*L):end);
+
+genuses_train = genuses(1:floor(0.8*L));
+genuses_test = genuses(ceil(0.8*L):end);
+
+%%
+
 training = abs(train_set);
 testing = abs(test_set);
+
+%%
 
 % LDA
 class = classify(testing', training', genuses_train');
 accuracy = sum(class==genuses_test')/length(class);
 
+%%
+
 % Naive Bayes
 Mdl_cnb = fitcnb(training', genuses_train');
 class_cnb = predict(Mdl_cnb, testing');
-accuracy_cnb = sum(class_cnb==genuses_test')/length(class);
+accuracy_cnb = sum(class_cnb==genuses_test')/length(class_cnb);
 
 %%
 
 % Random Forests
 Mdl_rf = TreeBagger(500, training', genuses_train');
 class_rf = predict(Mdl_rf, testing');
-accuracy_rf = sum(class_rf==genuses_test')/length(class);
+accuracy_rf = sum(class_rf==genuses_test')/length(class_rf);
 
-%%
 
 % KNN
 Mdl_knn = fitcknn(training', genuses_train');
 class_knn = predict(Mdl_knn, testing');
-accuracy_knn = sum(class_knn==genuses_test')/length(class);
+accuracy_knn = sum(class_knn==genuses_test')/length(class_knn);
 
-%%
 
 % fit ensembles
 Mdl_ens = fitcensemble(training', genuses_train');
 class_ens = predict(Mdl_ens, testing');
-accuracy_ens = sum(class_ens==genuses_test')/length(class);
+accuracy_ens = sum(class_ens==genuses_test')/length(class_ens);
